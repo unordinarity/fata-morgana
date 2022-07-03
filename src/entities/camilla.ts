@@ -1,80 +1,78 @@
 import { createEvent, createStore, sample } from 'effector'
+import { cloneDeep } from 'lodash-es'
 
 // game state
 
-interface State {
+type Surround = Record<string, NonNullable<string | number | boolean>>
 
-}
+type Player = Record<string, NonNullable<string | number | boolean>>
 
-interface Surround {
-
-}
-
-interface Player {
-
-}
-
-interface Cell {
+type Cell = Record<string, NonNullable<string | number | boolean>> & {
   kind: string
-  hooks: Record<TaskDefinition['name'], () => Array<TaskAttempt> | TaskAttempt | void>
 }
 
-interface Game {
-  state: State
+interface GameState {
+  general: {
+    turn: number
+    player: number
+    finished: boolean
+  }
   surround: Surround
-  players: Array<Player>
-  cells: Array<Array<Cell>>
+  playerList: Array<Player>
+  cellMatrix: Array<Array<Cell>>
 }
 
 //
 
-interface TaskDefinition {
+interface Action {
   name: string
-  reducer: (game: Game, payload: {}) => Game
+  reducer: (gameState: GameState, payload: {}) => GameState
 }
 
-interface TaskAttempt {
-  name: TaskDefinition['name']
+interface Task {
+  name: Action['name']
   payload: {}
 }
 
-interface Addon {
-  actions: Array<TaskDefinition>
+interface Hook {
+  action: Action['name']
+  trigger: () => Array<Task> | Task | void
 }
 
-const createPlugin = (): Addon => {
-  return {
-    actions: []
-  }
+interface Addon {
+  actions: Array<Action>
+  hooks: Array<Hook>
 }
 
 const createController = (
-  addons: Array<Addon> = []
+  addons: Array<Addon> = [],
 ) => {
-  const actionsList = addons.map(plugin => plugin.actions).flat()
+  const actionsList = addons.map(addon => addon.actions).flat()
+  const hookList = addons.map(addons => addons.hooks).flat()
 
-  const gameState = createStore<Game>({
-    state: {},
+  const gameState = createStore<GameState>({
+    general: {
+      turn: 0,
+      finished: false,
+      player: 0,
+    },
     surround: {},
-    players: [],
-    cells: [],
+    playerList: [],
+    cellMatrix: [],
   })
 
-  const gameStateSet = createEvent()
-  gameState.on(gameStateSet, (_, payload) => payload)
+  const taskQueue = createStore<Array<Task>>([])
 
-  const taskQueue = createStore<Array<TaskAttempt>>([])
-
-  const taskQueuePush = createEvent<TaskAttempt>()
+  const taskQueuePush = createEvent<Task>()
   taskQueue.on(taskQueuePush, (state, payload) => [...state, payload])
 
   const taskQueueExecute = createEvent()
   sample({
     clock: taskQueueExecute,
-    source: { gameState, taskQueue },
+    source: { gameState: gameState, taskQueue },
     fn: ({ gameState, taskQueue }) => {
-      let gameStateTemp = { ...gameState }
-      let taskQueueTemp = [...taskQueue]
+      let gameStateTemp = cloneDeep(gameState)
+      let taskQueueTemp = cloneDeep(taskQueue)
 
       while (taskQueueTemp.length > 0) {
         const task = taskQueueTemp.shift()
@@ -83,35 +81,44 @@ const createController = (
         const actionFound = actionsList.find(a => a.name === task.name)
         if (!actionFound) throw new Error('Trying to execute task with unknown action name')
 
-        const reduceResult = actionFound.reducer(gameStateTemp, task.payload)
+        gameStateTemp = actionFound.reducer(gameStateTemp, task.payload)
       }
 
       return gameStateTemp
     },
-    target: gameStateSet
+    target: gameState
   })
 
   taskQueue.on(taskQueueExecute, () => [])
 
   return {
     gameState,
-    actionsQueuePush: taskQueuePush,
-    actionsQueueExecute: taskQueueExecute,
+    taskQueuePush,
+    taskQueueExecute,
   }
 }
 
 //
 
-const pluginStarter = createPlugin()
+const addonStarter: Addon = {
+  actions: [],
+  hooks: [],
+}
 
-const pluginNavigation = createPlugin()
+const addonNavigation: Addon = {
+  actions: [],
+  hooks: [],
+}
 
-const pluginMyths = createPlugin()
+const addonMyths: Addon = {
+  actions: [],
+  hooks: [],
+}
 
 const controller = createController([
-  pluginStarter,
-  pluginMyths,
-  pluginNavigation,
+  addonStarter,
+  addonMyths,
+  addonNavigation,
 ])
 
 export {}
