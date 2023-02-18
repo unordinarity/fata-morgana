@@ -6,6 +6,6 @@
     "moduleResolution": "node"
   },
   "include": [
-    "rollup.config.js"
+    "vite.config.ts"
   ]
 }
