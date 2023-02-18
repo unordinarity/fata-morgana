@@ -2,6 +2,15 @@
   "name": "fata-morgana",
   "version": "0.0.0",
   "private": true,
+  "scripts": {
+    "develop": "nx develop @fata-morgana/client",
+    "format": "nx run-many --target=format",
+    "lint": "nx run-many --target=lint",
+    "test": "nx run-many --target=test",
+    "build": "nx build @fata-morgana/client",
+    "serve": "nx serve @fata-morgana/client",
+    "clean": "nx run-many --target=clean"
+  },
   "devDependencies": {
     "lerna": "^6.5.1",
     "nx": "15.7.1"

@@ -1,13 +1,19 @@
 import { createStore } from 'effector'
 
 export namespace FMCore {
-  export interface Plugin<Background, Player, Chip> {
-    background: Background
-    player: Player
-    chip: Chip
+  export interface Plugin<
+    Background extends {} = {},
+    Player extends {} = {},
+    Chip extends {} = {},
+  > {
+
   }
 
-  export interface Model<Background, Player, Chip> {
+  export interface Model<
+    Background extends {} = {},
+    Player extends {} = {},
+    Chip extends {} = {},
+  > {
     system: {
       turn: number
       player: number
@@ -18,22 +24,35 @@ export namespace FMCore {
     chipMatrix: Array<Array<Chip>>
   }
 
-  export const createController = <
-    Plugins extends Array<Plugin<any, any, any>>,
-  > (options: {
-    plugins: Plugins,
-  }) => {
-    type ModelPlugged = Model<Plugins[number]['background'], Plugins[number]['player'], Plugins[number]['chip']>
+  type BackgroundWithPlugins<PluginType extends Plugin> =
+    PluginType extends Plugin<infer Background, any, any> ? Background : never
 
-    const store = createStore<ModelPlugged>({
+  type PlayerWithPlugins<PluginType extends Plugin> =
+    PluginType extends Plugin<any, infer Player, any> ? Player : never
+
+  type ChipWithPlugins<PluginType extends Plugin> =
+    PluginType extends Plugin<any, any, infer Chip> ? Chip : never
+
+  type ModelWithPlugins<PluginType extends Plugin> = Model<
+    BackgroundWithPlugins<PluginType>,
+    PlayerWithPlugins<PluginType>,
+    ChipWithPlugins<PluginType>
+  >
+
+  export const createController = <
+    PluginType extends Plugin<any, any, any>,
+  > (options: {
+    plugins: Array<PluginType>,
+  }) => {
+    const store = createStore<ModelWithPlugins<PluginType>>({
       system: {
         turn: 0,
         player: 0,
         finished: false,
       },
-      background: {},
-      playerList: [],
-      chipMatrix: [],
+      background: {} as BackgroundWithPlugins<PluginType>,
+      playerList: [] as Array<PlayerWithPlugins<PluginType>>,
+      chipMatrix: [] as Array<Array<ChipWithPlugins<PluginType>>>,
     })
 
     return store
