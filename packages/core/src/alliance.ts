@@ -1,18 +1,28 @@
 import { createStore } from 'effector'
+import { JsonObject } from 'type-fest'
 
 export namespace FMCore {
-  export interface Plugin<
-    Background extends {} = {},
-    Player extends {} = {},
-    Chip extends {} = {},
-  > {
+  interface PlayerBase {
+    isWinner: boolean
+  }
 
+  interface ChipBase {
+    kind: string
+  }
+
+  export interface Plugin<
+    Background extends JsonObject = {},
+    Player extends PlayerBase = PlayerBase,
+    Chip extends ChipBase = ChipBase,
+    Actions extends Array<string> = [],
+  > {
+    actions: Actions
   }
 
   export interface Model<
-    Background extends {} = {},
-    Player extends {} = {},
-    Chip extends {} = {},
+    Background extends JsonObject = {},
+    Player extends PlayerBase = PlayerBase,
+    Chip extends ChipBase = ChipBase,
   > {
     system: {
       turn: number
@@ -39,8 +49,14 @@ export namespace FMCore {
     ChipWithPlugins<PluginType>
   >
 
+  export const definePlugin = <P>(
+    plugin: P extends Plugin<infer Background, infer Player, infer Chip, infer Actions>
+      ? Plugin<Background, Player, Chip, Actions>
+      : never
+  )  => plugin
+
   export const createController = <
-    PluginType extends Plugin<any, any, any>,
+    PluginType extends Plugin,
   > (options: {
     plugins: Array<PluginType>,
   }) => {
@@ -54,6 +70,8 @@ export namespace FMCore {
       playerList: [] as Array<PlayerWithPlugins<PluginType>>,
       chipMatrix: [] as Array<Array<ChipWithPlugins<PluginType>>>,
     })
+
+    const actionQueue = createStore<Array<never>>([])
 
     return store
   }

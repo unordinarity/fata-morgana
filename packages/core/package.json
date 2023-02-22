@@ -10,16 +10,16 @@
     "lint": "exit 0",
     "test": "exit 0",
     "build": "rollup -c rollup.config.js",
+    "serve": "exit 0",
     "clean": "rimraf dist"
   },
   "dependencies": {
-    "effector": "^22.5.0",
+    "effector": "^22.5.1",
     "effector-react": "^22.5.0",
     "lodash-es": "^4.17.21",
     "nanoid": "^4.0.1",
-    "patronum": "^1.14.2",
-    "type-fest": "^3.6.0",
-    "typescript": "^4.9.5"
+    "patronum": "^1.15.0",
+    "type-fest": "^3.6.0"
   },
   "devDependencies": {
     "@rollup/plugin-typescript": "^11.0.0",
@@ -29,7 +29,8 @@
     "@types/react-dom": "^18.0.11",
     "read-pkg-up": "^9.1.0",
     "rimraf": "^4.1.2",
-    "rollup": "^3.17.0",
-    "rollup-plugin-dts": "^5.2.0"
+    "rollup": "^3.17.2",
+    "rollup-plugin-dts": "^5.2.0",
+    "typescript": "^4.9.5"
   }
 }
