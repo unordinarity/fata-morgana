@@ -11,6 +11,7 @@ package-lock.json
 yarn.lock
 
 ### VisualStudioCode template
+
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
@@ -22,6 +23,7 @@ yarn.lock
 .history/
 
 ### Linux template
+
 *~
 
 # temporary files which can be created if a process still has a handle open of a deleted file
@@ -36,7 +38,8 @@ yarn.lock
 # .nfs files are created when an open file is removed but is still being accessed
 .nfs*
 
-### Node template
+### Node template (modified)
+
 # Logs
 logs
 *.log
@@ -65,10 +68,10 @@ coverage
 .nyc_output
 
 # Grunt intermediate storage (https://gruntjs.com/creating-plugins#storing-task-files)
-.grunt
+# .grunt
 
 # Bower dependency directory (https://bower.io/)
-bower_components
+# bower_components
 
 # node-waf configuration
 .lock-wscript
@@ -81,7 +84,7 @@ node_modules/
 jspm_packages/
 
 # Snowpack dependency directory (https://snowpack.dev/)
-web_modules/
+# web_modules/
 
 # TypeScript cache
 *.tsbuildinfo
@@ -112,16 +115,16 @@ web_modules/
 .env.test
 
 # parcel-bundler cache (https://parceljs.org/)
-.cache
-.parcel-cache
+# .cache
+# .parcel-cache
 
 # Next.js build output
-.next
-out
+# .next
+# out
 
 # Nuxt.js build / generate output
-.nuxt
-dist
+# .nuxt
+# dist
 
 # Gatsby files
 .cache/
@@ -130,22 +133,22 @@ dist
 # public
 
 # vuepress build output
-.vuepress/dist
+# .vuepress/dist
 
 # Serverless directories
-.serverless/
+# .serverless/
 
 # FuseBox cache
-.fusebox/
+# .fusebox/
 
 # DynamoDB Local files
-.dynamodb/
+# .dynamodb/
 
 # TernJS port file
-.tern-port
+# .tern-port
 
 # Stores VSCode versions used for testing VSCode extensions
-.vscode-test
+# .vscode-test
 
 # yarn v2
 .yarn/cache
@@ -155,6 +158,7 @@ dist
 .pnp.*
 
 ### Vim template
+
 # Swap
 [._]*.s[a-v][a-z]
 !*.svg  # comment out if you don't need vector files
@@ -176,6 +180,7 @@ tags
 [._]*.un~
 
 ### Windows template
+
 # Windows thumbnail cache files
 Thumbs.db
 Thumbs.db:encryptable
@@ -202,6 +207,7 @@ $RECYCLE.BIN/
 *.lnk
 
 ### macOS template
+
 # General
 .DS_Store
 .AppleDouble
@@ -228,4 +234,3 @@ Icon
 Network Trash Folder
 Temporary Items
 .apdisk
-

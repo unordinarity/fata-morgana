@@ -11,14 +11,15 @@
     "clean": "nx run-many --target=clean"
   },
   "devDependencies": {
-    "lerna": "^6.5.1",
-    "nx": "15.7.1"
+    "lerna": "^7.0.2",
+    "nx": "^16.3.2"
   },
   "workspaces": [
     "packages/*"
   ],
   "engines": {
-    "node": ">=18.0.0",
-    "yarn": ">=1.0.0 <2.0.0"
-  }
+    "node": ">=18.16.0",
+    "yarn": "1.22.19"
+  },
+  "packageManager": "yarn@1.22.19"
 }

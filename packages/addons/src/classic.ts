@@ -1,0 +1,29 @@
+export default [{
+  id: 'boat',
+}, {
+  id: 'yacht',
+}, {
+  id: 'brigantine',
+}, {
+  id: 'sсhооnеr',
+}, {
+  id: 'corvette',
+}, {
+  id: 'frigate',
+}, {
+  id: 'flagship',
+}, {
+  id: 'pennant',
+}, {
+  id: 'watches',
+}, {
+  id: 'mine',
+}, {
+  id: 'shark',
+}, {
+  id: 'rum',
+}, {
+  id: 'barrel',
+}, {
+  id: 'flag',
+}]
