@@ -2,27 +2,38 @@ import { random } from 'lodash-es'
 import { v4 as uuid } from 'uuid'
 import { produce } from 'immer'
 
-import { FataMorgana } from '@fata-morgana/engine'
+import * as FataMorgana from '@fata-morgana/engine'
 
-export const hooks: Array<FataMorgana.Hook> = [
-  {
-    actions: 'chip-create',
-    handler: ({ action, state }) => {
+export const pluginMeta: FataMorgana.PluginMeta = {
+  name: 'core',
+  version: '0.0.0',
+}
+
+export const pluginRequirements: FataMorgana.PluginRequirements = {
+  plugins: [],
+}
+
+export const pluginFactory: FataMorgana.PluginFactory = (pluginApi) => {
+  const chipCreateAction = pluginApi.createActionKind({ kind: 'chip-create' })
+
+  pluginApi.handleAction(
+    chipCreateAction,
+    (state, action) => {
       if (!action.kind || !action.x || !action.y) {
-        return Error(
+        throw Error(
           'FM: core-addon: actions: chip-create: ' +
           'cannot create chip without required fields "x", "y" and "kind"'
         )
       }
-      if (state.chipList.find(c => c.x === action.x && c.y === action.y)) {
-        return Error(
+      if (state.chips.find(c => c.x === action.x && c.y === action.y)) {
+        throw Error(
           'FM: core-addon: actions: chip-create: ' +
           'chip with same values of fields "x" and "y" already exists'
         )
       }
       return {
         state: produce(state, state => {
-          state.chipList.push({
+          state.chips.push({
             kind: action.kind,
             id: (action.id as string) ?? uuid(),
             x: action.x as number,
@@ -31,16 +42,19 @@ export const hooks: Array<FataMorgana.Hook> = [
         })
       }
     }
-  },
-  {
-    actions: 'chip-move',
-    handler: ({ action, state }) => {
+  )
+
+  const chipMoveAction = pluginApi.createActionKind({ kind: 'chip-move' })
+
+  pluginApi.handleAction(
+    chipMoveAction,
+    (state, action) => {
       if ((
         !action.fromX || !action.fromY || !action.toX || !action.toY
       ) || (
         !action.id || !action.toX || !action.toY
       )) {
-        return Error(
+        throw Error(
           'FM: core-addon: actions: chip-move: ' +
           'cannot move chip without required fields "fromX", "fromY", "toX", "toY" or "id", "toX", "toY"'
         )
@@ -48,7 +62,7 @@ export const hooks: Array<FataMorgana.Hook> = [
       if (action.x && action.y) {
         const chipFoundIndex = state.chipList.findIndex(c => c.x === action.x && c.y === action.y)
         if (chipFoundIndex !== -1) {
-          return Error(
+          throw Error(
             'FM: core-addon: actions: chip-move: ' +
             'chip with same values of fields "x" and "y" already exists'
           )
@@ -63,7 +77,7 @@ export const hooks: Array<FataMorgana.Hook> = [
       if (action.id) {
         const chipFoundIndex = state.chipList.findIndex(c => c.id === action.id)
         if (chipFoundIndex !== -1) {
-          return Error(
+          throw Error(
             'FM: core-addon: actions: chip-move: ' +
             'chip with same value of field "id" already exists'
           )
@@ -77,18 +91,24 @@ export const hooks: Array<FataMorgana.Hook> = [
       }
       return null
     }
-  },
-  {
-    actions: 'chip-delete',
-    handler: ({ action, state }) => {
+  )
+
+  const chipDeleteAction = pluginApi.createActionKind({ kind: 'chip-delete' })
+
+  pluginApi.handleAction(
+    chipDeleteAction,
+    (state, action) => {
       if (action.x && action.y) return null
       if (action.id) return null
-      return Error()
+      throw Error()
     }
-  },
-  {
-    actions: 'game-start',
-    handler: ({ action, state }) => {
+  )
+
+  const gameStartAction = pluginApi.createActionKind({ 'game-start' })
+
+  pluginApi.handleAction(
+    gameStartAction,
+    (state, action) => {
       const obstacles = new Array(random(20)).fill(null).map(elem => ({
         x: random(10),
         y: random(10),
@@ -102,5 +122,5 @@ export const hooks: Array<FataMorgana.Hook> = [
         state: state
       }
     }
-  },
-]
+  )
+}

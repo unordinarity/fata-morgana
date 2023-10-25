@@ -11,7 +11,7 @@ export default defineConfig([{
     typescriptPlugin(),
   ],
   output: [{
-    file: 'dist/index.js',
+    file: packageJson.module,
     format: 'esm',
   }],
   external: [
@@ -26,7 +26,7 @@ export default defineConfig([{
     typescriptDtsPlugin(),
   ],
   output: {
-    file: 'dist/index.d.ts',
+    file: packageJson.types,
     format: 'es',
   },
   external: [
